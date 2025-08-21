@@ -5,11 +5,13 @@ import (
 	"net"
 	"netcasthub/config"
 	"netcasthub/pkg"
+	"time"
 
 	"github.com/miekg/dns"
 )
 
 func main() {
+	go pkg.Redirect()
 
 	log.Printf("Trying to listen on the specific interface: %s\n", config.InterfaceName)
 
@@ -32,8 +34,12 @@ func main() {
 	handler := pkg.New(l)
 
 	server := &dns.Server{
-		PacketConn: l,
-		Handler:    dns.HandlerFunc(handler.HandleMDNSQuery),
+		PacketConn:  l,
+		Handler:     dns.HandlerFunc(handler.HandleMDNSQuery),
+		UDPSize:     4096,
+		ReusePort:   true,
+		ReuseAddr:   true,
+		ReadTimeout: 5 * time.Second,
 	}
 
 	// Info to console

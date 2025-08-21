@@ -32,7 +32,8 @@ func (h *DnsHandler) HandleMDNSQuery(w dns.ResponseWriter, r *dns.Msg) {
 	}
 
 	for _, q := range r.Question {
-		if strings.HasSuffix(strings.ToLower(q.Name), "_googlecast._tcp.local.") && q.Qtype == dns.TypePTR {
+		//_%9E5E7C8F47989526C9BCD95D24084F6F0B27C5ED._sub._googlecast._tcp.local: type PTR, class IN, "QM" question
+		if strings.HasSuffix(strings.ToLower(q.Name), "_googlecast._tcp.local") && q.Qtype == dns.TypePTR {
 			if config.Debug {
 				log.Printf(">>> Compatible query detected ('%s'). Preparing response...\n", q.Name)
 
